@@ -33,6 +33,27 @@ public class GameManager {
         return instantKillAxe;
     }
 
+    public static void notifyAllPlayers(String message) {
+        for(UUID uuid: players.keySet()) {
+            Player player = Bukkit.getPlayer(uuid);
+            if(player != null) {
+                player.sendMessage(message);
+            }
+        }
+    }
+
+    public static int[] getSeekerAndHiderNum(){
+        int seeker = 0;
+        int hider = 0;
+        for(UUID uuid: players.keySet()){
+            if(players.get(uuid) == 1) {
+                seeker++;
+            } else hider++;
+        }
+
+        return new int[]{seeker, hider};
+    }
+
     public static void setAsSeeker(Player seeker) {
         // 检测是否已拥有秒人斧
         if(MyUtil.playerHasNamedItem(seeker, "秒人斧", true)) {
