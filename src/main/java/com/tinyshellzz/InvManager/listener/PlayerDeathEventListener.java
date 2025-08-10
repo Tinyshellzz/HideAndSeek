@@ -24,18 +24,6 @@ public class PlayerDeathEventListener implements Listener {
         UUID uuid = player.getUniqueId();
 
         if(players.containsKey(uuid)) {
-            if(players.get(uuid) != 0) {
-                players.put(uuid, 1);
-                MyUtil.teleport(player, PluginConfig.start_loc);
-
-                GameManager.setAsSeeker(player);
-                int[] seekerAndHiderNum = GameManager.getSeekerAndHiderNum();
-                int seekerNum = seekerAndHiderNum[0];
-                int hiderNum = seekerAndHiderNum[1];
-
-                String killerName = killer == null ? "": killer.getName();
-                 GameManager.notifyAllPlayers( ChatColor.AQUA + player.getName() + ChatColor.RESET + "被" + ChatColor.AQUA + killerName + ChatColor.RESET + "击杀，" + "还剩 " + hiderNum + " 个猫，" + "还剩 " + seekerNum + "个捉猫人");
-            }
             event.setCancelled(true);
         }
     }

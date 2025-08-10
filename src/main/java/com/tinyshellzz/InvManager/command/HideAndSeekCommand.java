@@ -37,6 +37,7 @@ public class HideAndSeekCommand  implements TabExecutor {
                 }
                 PluginConfig.reload();
                 return true;
+                /**
             case "save秒人斧":
                 _m = Pattern.compile("^.*CraftRemoteConsoleCommandSender.*$").matcher(sender.toString());
                 if (!(sender instanceof ConsoleCommandSender || _m.find() || sender.isOp())) {
@@ -45,6 +46,7 @@ public class HideAndSeekCommand  implements TabExecutor {
                 }
 
                 return HideAndSeekService.save_Axe(sender, command, s, args);
+                 */
             case "start":
                 return HideAndSeekService.start(sender, command, s, args);
         }

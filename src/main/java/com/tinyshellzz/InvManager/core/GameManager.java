@@ -55,6 +55,7 @@ public class GameManager {
     }
 
     public static void setAsSeeker(Player seeker) {
+        /**
         // 检测是否已拥有秒人斧
         if(MyUtil.playerHasNamedItem(seeker, "秒人斧", true)) {
             seeker.sendMessage("你已拥有秒人斧, 无法再获得秒人斧");
@@ -65,9 +66,11 @@ public class GameManager {
         if(instantKillAxe != null) {
             seeker.getInventory().addItem(instantKillAxe);
         }
+         */
 
         seeker.setGlowing(true);
         BodySizeChanger.changeBodySize(seeker, 1);
+        players.put(seeker.getUniqueId(), 1);  // 标记为 Seeker
         seeker.sendTitle("你是捉猫人", "", 10, 60, 10);
     }
 
@@ -80,7 +83,7 @@ public class GameManager {
             }
         }
 
-        if(players.size() < 3) {
+        if(!PluginConfig.debug && players.size() < 3) {
 
             players.clear();
             return false;
@@ -92,7 +95,6 @@ public class GameManager {
         for(UUID p: players.keySet()) {
             if(idx == seeker_) {
                 seeker = Bukkit.getPlayer(p);
-                players.put(p, 1);  // 标记为 Seeker
                 Bukkit.getConsoleSender().sendMessage("已设置完seeker");
 
                 if(seeker != null) {

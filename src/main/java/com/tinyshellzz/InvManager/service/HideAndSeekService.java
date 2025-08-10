@@ -35,7 +35,7 @@ public class HideAndSeekService {
             return true;
         }
 
-        if(!PluginConfig.debug && !GameManager.start()) {
+        if(!GameManager.start()) {
             sender.sendMessage("人数不足三人，无法开始游戏");
         }
         sender.sendMessage("游戏已开始");
