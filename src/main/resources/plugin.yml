@@ -1,0 +1,12 @@
+name: HideAndSeek
+version: '${version}'
+main: com.tinyshellzz.InvManager.HideAndSeek
+api-version: '1.20'
+load: POSTWORLD
+authors: [ Tinyshellzz ]
+folia-supported: true
+commands:
+  HideAndSeek:
+    description: HideAndSeek Command.
+    usage: /HideAndSeek start
+    default: true

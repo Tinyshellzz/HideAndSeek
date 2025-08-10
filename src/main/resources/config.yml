@@ -1,0 +1,29 @@
+debug: false
+game_loc:
+  a:
+    x: 512
+    y: 320
+    z: 512
+    world: world
+  b:
+    x: -512
+    y: -64
+    z: -512
+    world: world
+start_loc:
+  x: -43
+  y: 63
+  z: 67
+teleport_out_loc:
+  x: 1004
+  y: 125
+  z: 1001
+body_scale: 0.2
+game_time: 180
+hide_time: 30
+prepare_time: 10
+db_host: '127.0.0.1'
+db_port: 3306
+db_user: "root"
+db_passwd: "123"
+db_database: "inventory_recover"
