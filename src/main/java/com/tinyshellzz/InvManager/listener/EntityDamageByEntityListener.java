@@ -14,10 +14,12 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import java.util.UUID;
 
 import static com.tinyshellzz.InvManager.ObjectPool.players;
+import static com.tinyshellzz.InvManager.ObjectPool.started;
 
 public class EntityDamageByEntityListener implements Listener {
     @EventHandler
     public void onPlayerMeleeHit(EntityDamageByEntityEvent event) {
+        if(started != 3) return;
         // Make sure the damaged entity is a player
         if (!(event.getEntity() instanceof Player victim)) return;
 

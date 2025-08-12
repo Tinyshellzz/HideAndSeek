@@ -18,10 +18,12 @@ teleport_out_loc:
   x: 1004
   y: 125
   z: 1001
+out_of_bounds_time_limit: 20
 body_scale: 0.2
-game_time: 180
-hide_time: 30
-prepare_time: 10
+game_time: 190
+hide_time: 20
+prepare_time: 20
+game_area_protection: true
 db_host: '127.0.0.1'
 db_port: 3306
 db_user: "root"

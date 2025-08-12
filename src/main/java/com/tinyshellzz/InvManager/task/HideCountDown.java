@@ -9,6 +9,8 @@ import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -18,8 +20,8 @@ import static com.tinyshellzz.InvManager.ObjectPool.players;
 import static com.tinyshellzz.InvManager.ObjectPool.started;
 
 public class HideCountDown {
-    static int hideCountDown = PluginConfig.hide_time;
-    static BossBar bar = Bukkit.createBossBar(
+    public static int hideCountDown = 30;
+    public static BossBar bar = Bukkit.createBossBar(
             ChatColor.YELLOW + "找到你躲藏的位置 " + hideCountDown + "s",
             BarColor.YELLOW,
             BarStyle.SOLID
@@ -34,26 +36,34 @@ public class HideCountDown {
 
         // 每秒执行一次
         scheduler.scheduleAtFixedRate(() -> {
-                    if (started != 2) return;
+                    try {
+                        if (started != 2) return;
 
-                    for (Player player : Bukkit.getOnlinePlayers()) {
-                        UUID uuid = player.getUniqueId();
-                        Location loc = player.getLocation();
+                        for (Player player : Bukkit.getOnlinePlayers()) {
+                            UUID uuid = player.getUniqueId();
+                            Location loc = player.getLocation();
 
-                        if (players.containsKey(uuid)) {
-                            bar.addPlayer(player);  // Show it to the player
+                            if (players.containsKey(uuid)) {
+                                bar.addPlayer(player);  // Show it to the player
+                            }
                         }
-                    }
 
-                    if (timeLeft <= 0) {
-                        bar.removeAll();
-                        started = 3;
-                        GameCountDown.timeLeft = GameCountDown.gameTime;
-                    } else {
-                        bar.setTitle(ChatColor.YELLOW + "找到你躲藏的位置 " + timeLeft + "s");
-                        bar.setProgress((double) timeLeft / hideCountDown);
+                        if (timeLeft <= 0) {
+                            bar.removeAll();
+                            started = 3;
+                            GameCountDown.timeLeft = GameCountDown.gameTime;
+                        } else {
+                            bar.setTitle(ChatColor.YELLOW + "找到你躲藏的位置 " + timeLeft + "s");
+                            bar.setProgress((double) timeLeft / hideCountDown);
 
-                        timeLeft--;
+                            timeLeft--;
+                        }
+                    } catch (RuntimeException e) {
+                        StringWriter sw = new StringWriter();
+                        PrintWriter pw = new PrintWriter(sw);
+                        e.printStackTrace(pw);
+                        String sStackTrace = sw.toString();
+                        Bukkit.getConsoleSender().sendMessage(ChatColor.RED + sStackTrace);
                     }
                 },
                 0,

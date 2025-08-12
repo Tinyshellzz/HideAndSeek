@@ -2,7 +2,9 @@ package com.tinyshellzz.InvManager.core;
 
 import com.tinyshellzz.InvManager.ObjectPool;
 import com.tinyshellzz.InvManager.config.PluginConfig;
+import com.tinyshellzz.InvManager.task.GameCountDown;
 import com.tinyshellzz.InvManager.task.GameStartCountDown;
+import com.tinyshellzz.InvManager.task.HideCountDown;
 import com.tinyshellzz.InvManager.utils.ItemStackBase64Converter;
 import com.tinyshellzz.InvManager.utils.MyUtil;
 import org.bukkit.Bukkit;
@@ -13,8 +15,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 
-import static com.tinyshellzz.InvManager.ObjectPool.instantKillAxeMapper;
-import static com.tinyshellzz.InvManager.ObjectPool.players;
+import static com.tinyshellzz.InvManager.ObjectPool.*;
 import static com.tinyshellzz.InvManager.config.PluginConfig.*;
 import static com.tinyshellzz.InvManager.task.PlayerInRangeMonitor.inArea;
 
@@ -38,6 +39,15 @@ public class GameManager {
             Player player = Bukkit.getPlayer(uuid);
             if(player != null) {
                 player.sendMessage(message);
+            }
+        }
+    }
+
+    public static void notifyAllPlayersByTitle(String message) {
+        for(UUID uuid: players.keySet()) {
+            Player player = Bukkit.getPlayer(uuid);
+            if(player != null) {
+                player.sendTitle(message, "", 10, 60, 10);
             }
         }
     }
@@ -74,6 +84,50 @@ public class GameManager {
         seeker.sendTitle("你是捉猫人", "", 10, 60, 10);
     }
 
+    public static void gameFinished(int winningSide) {
+        if(winningSide != -1) {
+            if (winningSide == 1){
+                notifyAllPlayersByTitle("捉猫人 胜利！");
+
+                notifyAllPlayers("捉猫人：" + getPlayerList(1));
+            } else {
+                notifyAllPlayersByTitle("猫 胜利！");
+
+                notifyAllPlayers("猫：" + getPlayerList(0));
+            }
+        }
+
+
+        for(UUID u: players.keySet()) {
+            Player p = Bukkit.getPlayer(u);
+            if(p != null) {
+                BodySizeChanger.changeBodySize(p, 1);
+                p.setGlowing(false);
+            }
+        }
+        started = 0;
+        GameCountDown.bar.removeAll();
+        GameStartCountDown.bar.removeAll();
+        HideCountDown.bar.removeAll();
+        players.clear();
+    }
+
+    public static String getPlayerList(int identity) {
+        StringBuilder playerList = new StringBuilder();
+        for(UUID uuid: players.keySet()){
+            if(players.get(uuid) == identity) {
+                Player player = Bukkit.getPlayer(uuid);
+                if(player != null) {
+                    playerList.append(player.getName());
+                    playerList.append(", ");
+                }
+            }
+        }
+        int len = playerList.length();
+        if(len > 0) playerList.delete(len-2, len);
+        return playerList.toString();
+    }
+
     public static boolean start() {
         for (Player player : Bukkit.getOnlinePlayers()) {
             UUID uuid = player.getUniqueId();
@@ -83,7 +137,7 @@ public class GameManager {
             }
         }
 
-        if(!PluginConfig.debug && players.size() < 3) {
+        if(!debug && players.size() < 3) {
 
             players.clear();
             return false;
@@ -107,11 +161,11 @@ public class GameManager {
 
         LinkedList<Location> vec = new LinkedList<>();
         HashSet<Location> visited = new HashSet<>();
-        visited.add(PluginConfig.start_loc);
+        visited.add(start_loc);
         if(seeker != null) {
-            MyUtil.teleport(seeker, PluginConfig.start_loc);
+            MyUtil.teleport(seeker, start_loc);
         }
-        Location last = PluginConfig.start_loc;
+        Location last = start_loc;
         Location a = new Location(last.getWorld(), last.getBlockX()-distance, last.getBlockY(), last.getBlockZ());
         if(!visited.contains(a)) {
             vec.addFirst(a);
@@ -141,7 +195,7 @@ public class GameManager {
                 Player p1 = Bukkit.getPlayer(p);
                 if (p1 != null) {
                     MyUtil.teleport(p1, last);
-                    BodySizeChanger.changeBodySize(p1, PluginConfig.body_scale);
+                    BodySizeChanger.changeBodySize(p1, body_scale);
                 }
 
                 a = new Location(last.getWorld(), last.getBlockX() - distance, last.getBlockY(), last.getBlockZ());
@@ -170,7 +224,7 @@ public class GameManager {
 
         // 开始游戏倒计时
         GameStartCountDown.timeLeft = GameStartCountDown.gameStartCountDown;
-        ObjectPool.started = 1;
+        started = 1;
 
         return true;
     }
@@ -207,7 +261,7 @@ public class GameManager {
 
 
         // 可以传到 (res_x, highestY, res_z);
-        if(teleport_out_loc != null && inArea(teleport_out_loc)) {MyUtil.teleport(player, PluginConfig.teleport_out_loc);}
+        if(teleport_out_loc != null && !inArea(teleport_out_loc)) {MyUtil.teleport(player, teleport_out_loc);}
         else MyUtil.teleport(player, new Location(curLoc.getWorld(), res_x, 250, res_z));
 
         player.sendMessage("游戏进行中, 无法进入该区域");

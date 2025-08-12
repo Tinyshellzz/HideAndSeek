@@ -48,6 +48,8 @@ public class HideAndSeek extends JavaPlugin {
         this.getServer().getPluginManager().registerEvents(new PlayerMoveListener(), this);
         this.getServer().getPluginManager().registerEvents(new PlayerDeathEventListener(), this);
         this.getServer().getPluginManager().registerEvents(new EntityDamageByEntityListener(), this);
+        this.getServer().getPluginManager().registerEvents(new BlockPlaceListener(), this);
+        this.getServer().getPluginManager().registerEvents(new BlockBreakListener(), this);
 
         // 注册命令
         this.getCommand("HideAndSeek").setExecutor(new HideAndSeekCommand());

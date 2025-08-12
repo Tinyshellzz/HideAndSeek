@@ -9,6 +9,8 @@ import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -18,8 +20,8 @@ import static com.tinyshellzz.InvManager.ObjectPool.players;
 import static com.tinyshellzz.InvManager.ObjectPool.started;
 
 public class GameStartCountDown {
-    public static int gameStartCountDown = PluginConfig.prepare_time;
-    static BossBar bar = Bukkit.createBossBar(
+    public static int gameStartCountDown = 10;
+    public static BossBar bar = Bukkit.createBossBar(
             ChatColor.YELLOW + "距离游戏开始还有 " + gameStartCountDown + "s",
             BarColor.YELLOW,
             BarStyle.SOLID
@@ -34,26 +36,34 @@ public class GameStartCountDown {
 
         // 每秒执行一次
         scheduler.scheduleAtFixedRate(() -> {
-                    if (started != 1) return;
+                    try {
+                        if (started != 1) return;
 
-                    for (Player player : Bukkit.getOnlinePlayers()) {
-                        UUID uuid = player.getUniqueId();
-                        Location loc = player.getLocation();
+                        for (Player player : Bukkit.getOnlinePlayers()) {
+                            UUID uuid = player.getUniqueId();
 
-                        if (players.containsKey(uuid)) {
-                            bar.addPlayer(player);  // Show it to the player
+                            if (players.containsKey(uuid)) {
+                                bar.addPlayer(player);  // Show it to the player
+
+                            }
                         }
-                    }
 
-                    if (timeLeft <= 0) {
-                        bar.removeAll();
-                        started = 2;
-                        HideCountDown.timeLeft = HideCountDown.hideCountDown;
-                    } else {
-                        bar.setTitle(ChatColor.YELLOW + "距离游戏开始还有 " + timeLeft + "s");
-                        bar.setProgress((double) timeLeft / gameStartCountDown);
+                        if (timeLeft <= 0) {
+                            bar.removeAll();
+                            started = 2;
+                            HideCountDown.timeLeft = HideCountDown.hideCountDown;
+                        } else {
+                            bar.setTitle(ChatColor.YELLOW + "距离游戏开始还有 " + timeLeft + "s");
+                            bar.setProgress((double) timeLeft / gameStartCountDown);
 
-                        timeLeft--;
+                            timeLeft--;
+                        }
+                    } catch (RuntimeException e) {
+                        StringWriter sw = new StringWriter();
+                        PrintWriter pw = new PrintWriter(sw);
+                        e.printStackTrace(pw);
+                        String sStackTrace = sw.toString();
+                        Bukkit.getConsoleSender().sendMessage(ChatColor.RED + sStackTrace);
                     }
                 },
                 0,

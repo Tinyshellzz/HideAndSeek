@@ -1,7 +1,12 @@
 package com.tinyshellzz.InvManager.config;
 
 
+import com.tinyshellzz.InvManager.task.GameCountDown;
+import com.tinyshellzz.InvManager.task.GameStartCountDown;
+import com.tinyshellzz.InvManager.task.HideCountDown;
+import com.tinyshellzz.InvManager.task.PlayerInRangeMonitor;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -12,6 +17,7 @@ import static java.lang.Math.min;
 
 public class PluginConfig {
     public static boolean debug;
+    public static boolean game_area_protection;
     public static String db_host;
     public static int db_port;
     public static String db_user;
@@ -27,6 +33,7 @@ public class PluginConfig {
     public static int game_time;
     public static int hide_time;
     public static int prepare_time;
+    public static int out_of_bounds_time_limit;
     private static final ConfigWrapper configWrapper = new ConfigWrapper(plugin, "config.yml");
 
     public static void reload() {
@@ -34,6 +41,7 @@ public class PluginConfig {
 
         YamlConfiguration yamlconfig = configWrapper.getConfig();
         debug = yamlconfig.getBoolean("debug");
+        game_area_protection = yamlconfig.getBoolean("game_area_protection");
         db_host = yamlconfig.getString("db_host");
         db_port = yamlconfig.getInt("db_port");
         db_user = yamlconfig.getString("db_user");
@@ -43,11 +51,16 @@ public class PluginConfig {
         loc_b = getLocationFromConfig("game_loc.b");
         body_scale = yamlconfig.getDouble("body_scale");
         game_time = yamlconfig.getInt("game_time");
+        GameCountDown.gameTime = game_time;
+        out_of_bounds_time_limit = yamlconfig.getInt("out_of_bounds_time_limit");
+        PlayerInRangeMonitor.timeLimit = out_of_bounds_time_limit;
         prepare_time = yamlconfig.getInt("prepare_time");
+        GameStartCountDown.gameStartCountDown = prepare_time;
         hide_time = yamlconfig.getInt("hide_time");
-        Bukkit.getConsoleSender().sendMessage(body_scale + "");
+        HideCountDown.hideCountDown = hide_time;
         start_loc = getLocationFromConfig("start_loc");
         teleport_out_loc = getLocationFromConfig("teleport_out_loc");
+        Bukkit.getConsoleSender().sendMessage(teleport_out_loc + "");
         start_loc.set(start_loc.getX() + 0.5, start_loc.getY() + 1.0, start_loc.getZ() + 0.5);
         World w = loc_a.getWorld();
         min_loc = new Location(w,
@@ -59,6 +72,7 @@ public class PluginConfig {
                 max(loc_a.getX(), loc_b.getX()),
                 max(loc_a.getY(), loc_b.getY()),
                 max(loc_a.getZ(), loc_b.getZ()));
+        Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "[HideAndSeek] 配置文件加载成功");
     }
 
     private static Location getLocationFromConfig(String path) {

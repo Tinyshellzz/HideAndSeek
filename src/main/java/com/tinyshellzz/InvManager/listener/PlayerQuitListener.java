@@ -1,7 +1,5 @@
 package com.tinyshellzz.InvManager.listener;
 
-import com.tinyshellzz.InvManager.HideAndSeek;
-import com.tinyshellzz.InvManager.core.BodySizeChanger;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
