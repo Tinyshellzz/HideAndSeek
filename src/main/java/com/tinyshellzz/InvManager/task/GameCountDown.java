@@ -25,6 +25,7 @@ import static com.tinyshellzz.InvManager.task.PlayerInRangeMonitor.inArea;
 
 public class GameCountDown {
     public static int gameTime = 120;
+    public static int end_game_time = 25;
     public static BossBar bar = Bukkit.createBossBar(
             ChatColor.YELLOW + "countdown " + gameTime + "s",
             BarColor.YELLOW,
@@ -60,6 +61,17 @@ public class GameCountDown {
                             GameManager.gameFinished(1);
                         } else if (seekerNum == 0) {
                             GameManager.gameFinished(0);
+                        }
+
+                        // 游戏进入终局，所有玩家高亮
+                        if(timeLeft == end_game_time) {
+                            for (Player player : Bukkit.getOnlinePlayers()) {
+                                UUID uuid = player.getUniqueId();
+
+                                if (players.containsKey(uuid)) {
+                                    player.setGlowing(true);
+                                }
+                            }
                         }
 
                         if (timeLeft <= 0) {

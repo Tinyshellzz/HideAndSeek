@@ -33,6 +33,7 @@ public class PluginConfig {
     public static int game_time;
     public static int hide_time;
     public static int prepare_time;
+    public static int end_game_time;
     public static int out_of_bounds_time_limit;
     private static final ConfigWrapper configWrapper = new ConfigWrapper(plugin, "config.yml");
 
@@ -51,6 +52,8 @@ public class PluginConfig {
         loc_b = getLocationFromConfig("game_loc.b");
         body_scale = yamlconfig.getDouble("body_scale");
         game_time = yamlconfig.getInt("game_time");
+        end_game_time = yamlconfig.getInt("end_game_time");
+        GameCountDown.end_game_time = end_game_time;
         GameCountDown.gameTime = game_time;
         out_of_bounds_time_limit = yamlconfig.getInt("out_of_bounds_time_limit");
         PlayerInRangeMonitor.timeLimit = out_of_bounds_time_limit;

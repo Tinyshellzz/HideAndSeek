@@ -20,7 +20,7 @@ public class PlayerMoveListener implements Listener {
             if (players.containsKey(event.getPlayer().getUniqueId())) {
                 Location from = event.getFrom();
                 Location eventTo = event.getTo();
-                if(from.getX() != eventTo.getX() || from.getZ() != eventTo.getZ()) {
+                if(from.getX() != eventTo.getX() || from.getZ() != eventTo.getZ() || from.getZ() != eventTo.getZ()) {
                     event.setCancelled(true);
                 }
             }
@@ -29,7 +29,7 @@ public class PlayerMoveListener implements Listener {
             if(isSeeker(p)) {
                 Location from = event.getFrom();
                 Location eventTo = event.getTo();
-                if(from.getX() != eventTo.getX() || from.getZ() != eventTo.getZ()) {
+                if(from.getX() != eventTo.getX() || from.getZ() != eventTo.getZ() || from.getZ() != eventTo.getZ()) {
                     event.setCancelled(true);
                 }
             }
